@@ -49,6 +49,9 @@
   </div>
 </template>
 <script>
+  import { SET_DRAGGING_ELEMENT } from '@/store/mutations';
+  import { components } from '@/config';
+
   export default {
     name: 'components-tree',
     data() {
@@ -217,6 +220,7 @@
 
         this.selected = `${index}`;
       },
+  
       onClickItem(item, index, parentIdx) {
         const data = this.treeData[parentIdx];
         const current = data.subitem[index];
@@ -224,13 +228,16 @@
 
         this.selected = `${parentIdx}_${index}`;
       },
+  
       onMouseDown(item) {
+        // 这里为了给drapPreview设置data-content属性
         this.preview = item.text;
       },
+  
       onItemDragStart(index, parentIdx, event) {
-        this.$store.commit('MOVING_COMPONENT', `${parentIdx}_${index}`);
+        const ele = components[`${parentIdx}_${index}`];
+        this.$store.commit(SET_DRAGGING_ELEMENT, ele);
         event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('Text', `${parentIdx}_${index}`);
         event.dataTransfer.setDragImage(this.$refs.dragPreview, 0, 0);
       },
     },

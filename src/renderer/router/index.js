@@ -5,10 +5,15 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'home',
+    //   component: require('@/views/Home').default,
+    // },
     {
       path: '/',
-      name: 'home',
-      component: require('@/views/Main').default,
+      name: 'editor',
+      component: require('@/views/Editor').default,
     },
     {
       path: '/export',

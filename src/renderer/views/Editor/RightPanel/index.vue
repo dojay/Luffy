@@ -4,7 +4,6 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
   import { TRIGGER_SET_PROPERTIES } from '@/constants/events';
   export default {
     name: 'right-panel',
@@ -15,9 +14,6 @@
         propertyData: {},
       };
     },
-    computed: mapState({
-      width: state => state.Main.leftWidth,
-    }),
 
     mounted() {
       // 监听右侧菜单变化事件

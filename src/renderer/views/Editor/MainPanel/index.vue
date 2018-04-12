@@ -1,25 +1,30 @@
 <template>
-  <div 
-    class="main-panel"
-    @dragenter.prevent="onDragEnter"
-    @dragover="onDragOver"
-    @dragleave="onDragLeave"
-    @drop="onDrop"
-  >
+  <div class="container">
+    <tool-bar />
     <div 
-      class="row" 
-      v-for="(item, index) in layout" 
-      @click="onItemClick"
+      class="main-panel"
+      @dragenter.prevent="onDragEnter"
+      @dragover="onDragOver"
+      @dragleave="onDragLeave"
+      @drop="onDrop"
     >
+      <div 
+        class="row" 
+        v-for="(item, index) in layout" 
+        @click="onItemClick"
+      >
 
+      </div>
     </div>
   </div>
+  
 </template>
 
 <script>
   import { mapState } from 'vuex';
-  import { components } from '@/config';
   import { TRIGGER_SET_PROPERTIES } from '@/constants/events';
+
+  import ToolBar from './ToolBar';
 
   export default {
     name: 'main-panel',
@@ -30,8 +35,11 @@
       };
     },
     computed: mapState({
-      movingComp: state => state.Main.movingComp,
+      draggingElement: state => state.main.draggingElement,
     }),
+    components: {
+      ToolBar,
+    },
     mounted() {
       /*
        * 这里需要全局监听拖拽的结束事件来移除对应的占位元素
@@ -54,17 +62,18 @@
 
       onDragOver(e) {
         e.preventDefault();
+
+        const dragging = this.draggingElement;
         // 当前存在拖动中的组件
-        if (this.movingComp) {
+        if (dragging) {
           // 获得距离最近的节点
           const targetElement = e.target;
           // 判断当前拖拽节点在主面板上
           if (targetElement.classList.contains('main-panel')) {
-            const currentCompConfig = components[this.movingComp];
-            // 在主容器中，仅处理布局组件
-            if (currentCompConfig && currentCompConfig.type === 'layout') {
-              // 判断如果当前容器是空时，直接创建一个空的占位符
-              if (this.layout.length === 0) {
+            // 判断如果当前容器是空时，直接创建一个空的占位
+            if (this.layout.length === 0) {
+              // 在主容器中，仅处理布局组件
+              if (dragging.type === 'layout') {
                 // 在最近的节点中，插入placeholder占位
                 this.setPlaceholder(targetElement);
               }
@@ -78,14 +87,19 @@
         console.log('leave', e);
       },
 
-      onDrop(e) {
-        const dropData = e.dataTransfer.getData('Text');
-        const dropElementConfig = components[dropData];
-        if (dropElementConfig && dropElementConfig.type === 'layout') {
-          if (this.layout.length === 0) {
-            this.layout.push(dropElementConfig);
+      onDrop() {
+        const dragging = this.draggingElement;
+        if (this.layout.length === 0) {
+          if (dragging && dragging.type === 'layout') {
+            this.layout.push(dragging);
+          } else {
+            this.$Notice.warning({
+              title: '提示',
+              desc: '先尝试拖个布局组件进来吧',
+            });
           }
         }
+  
         this.removePlaceholder();
       },
 
@@ -115,6 +129,12 @@
 </script>
 
 <style scoped>
+  .container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
   .main-panel {
     display: flex;
     flex: 1;

@@ -7,10 +7,13 @@
     @drag.prevent="onDrag"
     @dragend="onDragEnd"
   >
+    <div ref="dragged" class="split-dragged"></div>
   </div>
 </template>
 
 <script>
+  import { SET_MENU_WIDTH } from '@/store/mutations';
+
   export default {
     name: 'menu-split',
     props: ['width'],
@@ -26,10 +29,10 @@
     computed: {
       menuWidth: {
         get() {
-          return this.$store.state.Main.menuWidth;
+          return this.$store.state.menu.width;
         },
         set(width) {
-          this.$store.commit('UPDATE_MENU_WIDTH', width);
+          this.$store.commit(SET_MENU_WIDTH, width);
         },
       },
     },
@@ -38,8 +41,11 @@
         // 防止中间容器触发drop，所以指定
         e.dataTransfer.effectAllowed = 'none';
         this.lastDraggedX = e.clientX;
+        // 因为顶部菜单存在阴影 所以这里拖拽时设置个空白div，就不会存在拖拽时出现的小阴影框了
+        e.dataTransfer.setDragImage(this.$refs.dragged, 0, 0);
       },
       onDrag(e) {
+        // TODO 这里拖拽时，如果菜单隐藏了，应该不计算新的width
         const last = this.lastDraggedX;
         const current = e.clientX;
         // 距离上次拖动差值
@@ -62,9 +68,18 @@
 <style scoped>
   .menu_split {
     width: 5px;
+    background: #272822;
   }
 
   .menu_split:hover {
     cursor: ew-resize;
+  }
+
+  .split-dragged {
+    position: absolute;
+    left: -1000px;
+    right: -1000px;
+    width: 10px;
+    height: 10px;
   }
 </style>

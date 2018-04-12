@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron' // eslint-disable-line
+import { app, BrowserWindow, screen } from 'electron' // eslint-disable-line
 
 /**
  * Set `__static` path to static files in production
@@ -14,19 +14,38 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`;
 
 function createWindow() {
+  // 添加Vue扩展工具到devTool
+  // https://electronjs.org/docs/tutorial/devtools-extension
+  BrowserWindow.addDevToolsExtension('/Users/wangxin/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/4.1.4_0');
+
   /**
    * Initial window options
    */
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   mainWindow = new BrowserWindow({
-    height: 563,
+    height,
+    width,
     useContentSize: true,
-    width: 1000,
+    titleBarStyle: 'hiddenInset',
+    frame: false,
+    transparent: true,
   });
 
   mainWindow.loadURL(winURL);
 
+  if (mainWindow.isMaximized) {
+    mainWindow.maximize();
+  }
+
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+
+  // 资源加载完后再显示窗口
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+
+    mainWindow.focus();
   });
 }
 

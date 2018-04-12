@@ -18,7 +18,7 @@
 
 <script>
   import { TOOL_ICON_DEFAULT_COLOR, TOOL_ICON_SELECTED_COLOR } from '@/constants';
-  import { TOOL_TOOLS_CLICK, TOOL_TREE_CLICK } from '@/constants/events';
+  import { SET_MENU_TYPE } from '@/store/mutations';
 
   export default {
     name: 'left-panel',
@@ -78,7 +78,7 @@
       },
 
       handleTreeClick() {
-        this.$event.$emit(TOOL_TREE_CLICK);
+        this.$store.commit(SET_MENU_TYPE, 'files');
         // TODO 没有在首页，就跳到首页。暂时写在这，组件和业务耦合有点严重
         if (this.$route.name !== 'home') {
           this.$router.push({ path: '/home' });
@@ -86,7 +86,7 @@
       },
 
       handleToolsClick() {
-        this.$event.$emit(TOOL_TOOLS_CLICK);
+        this.$store.commit(SET_MENU_TYPE, 'components');
   
         if (this.$route.name !== 'home') {
           this.$router.push({ path: '/home' });

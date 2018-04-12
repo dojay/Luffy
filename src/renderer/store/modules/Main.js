@@ -1,15 +1,12 @@
+import { SET_DRAGGING_ELEMENT } from '../mutations';
+
 const state = {
-  movingComp: '',
-  menuWidth: 200,
+  draggingElement: '',
 };
 
 const mutations = {
-  UPDATE_MENU_WIDTH(state, width) {
-    state.menuWidth = width;
-  },
-
-  MOVING_COMPONENT(state, compId) {
-    state.movingComp = compId;
+  [SET_DRAGGING_ELEMENT](state, compId) {
+    state.draggingElement = compId;
   },
 };
 

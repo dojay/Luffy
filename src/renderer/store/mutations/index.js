@@ -1,0 +1,7 @@
+// Menu
+export const SET_MENU_WIDTH = 'SET_MENU_WIDTH';
+export const SET_MENU_VISIBLE = 'SET_MENU_VISIBLE';
+export const SET_MENU_TYPE = 'SET_MENU_TYPE';
+
+// Main
+export const SET_DRAGGING_ELEMENT = 'SET_DRAGGING_ELEMENT';
